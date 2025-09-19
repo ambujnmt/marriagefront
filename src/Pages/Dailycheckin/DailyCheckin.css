@@ -1,0 +1,77 @@
+/* Container styling */
+.daily-checkin-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+/* Header styling */
+.header-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 150px;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: bold;
+    flex: 1;
+    text-align: center;
+}
+
+/* Form styling */
+.checkin-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    border-color: #007bff;
+}
+
+/* Submit button styling */
+.submit-button {
+    background-color: #ff7f7f;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #ff4f4f;
+}
