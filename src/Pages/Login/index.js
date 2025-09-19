@@ -28,7 +28,7 @@ function Login({ onLogin }) {
         const loginData = { email, password };
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/login', loginData);
+            const response = await axios.post('https://site2demo.in/marriageapp/api/login', loginData);
 
             if (response.data.status === true) {
                 localStorage.setItem('isLoggedIn', 'true');
