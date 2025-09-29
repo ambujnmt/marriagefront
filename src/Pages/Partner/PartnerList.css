@@ -1,0 +1,45 @@
+.partner-table-container {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    margin-top: 70px;
+    margin-right: 50px;
+}
+
+.filter-search {
+    margin-bottom: 15px;
+}
+
+.filter-search input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.partner-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.partner-table th,
+.partner-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.partner-table th {
+    background-color: #f4f4f4;
+}
+
+.partner-table img {
+    border-radius: 50%;
+}

@@ -38,7 +38,8 @@ const Sidebar = ({ isVisible, handleLogout }) => {
             {/* Logo Section */}
             <div className="sidebar-logo">
                 <div className="logo-main">
-                    <img
+                    <h3>Marriage App</h3>
+                    {/* <img
                         src="/assets/images/logoapp.png"
                         alt="Logo"
                         onError={(e) => {
@@ -46,7 +47,8 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                             e.target.src = defaultUser;
                         }}
                         style={{ width: '150px', height: 'auto' }}
-                    />
+                    /> */}
+
                 </div>
             </div>
 
@@ -58,15 +60,27 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/daily-check-in">
-                        <BiCalendarEvent /> Daily Check in <BiChevronRight className="arrow-icon" />
+                    <Link to="/partner-list">
+                        <BiCalendarEvent />Users List<BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>
-                    <Link to="/weakly-check-in">
-                        <BiMessageSquareDetail /> Weekly Check in <BiChevronRight className="arrow-icon" />
+                    <Link to="/daily-check-in">
+                        <BiCalendarEvent /> Daily Check in Ques.<BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
+                <li>
+                    <Link to="/dealy-check-in-answer">
+                        <BiMessageSquareDetail />DailyCheckin Ans.<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/weakly-check-in">
+                        <BiMessageSquareDetail /> Weekly Qestion<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+
                 <li>
                     <Link to="/performance">
                         <BiChart /> Result & Analytics <BiChevronRight className="arrow-icon" />
@@ -88,8 +102,8 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/settings">
-                        <BiCog /> Settings <BiChevronRight className="arrow-icon" />
+                    <Link to="/settings/profile">
+                        <BiCog /> Profile <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>

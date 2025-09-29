@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
-// ✅ Accept onLogin prop
 function Login({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,6 +14,7 @@ function Login({ onLogin }) {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
+    // Auto-redirect if already logged in
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (isLoggedIn === 'true') {
@@ -22,55 +22,75 @@ function Login({ onLogin }) {
         }
     }, [navigate]);
 
+    // Toggle password visibility
+    const togglePassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    // Handle login submit
     const handleLogin = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-        const loginData = { email, password };
+
+        const loginData = {
+            email: email,
+            password: password
+        };
 
         try {
-            const response = await axios.post('https://site2demo.in/marriageapp/api/login', loginData);
+            const response = await axios.post(
+                'https://site2demo.in/marriageapp/api/login',
+                loginData
+            );
+
+            console.log("Login response:", response.data);
 
             if (response.data.status === true) {
+                const user = response.data.users;
+
+                // ✅ Store login info
                 localStorage.setItem('isLoggedIn', 'true');
-                onLogin(); // ✅ tell AppWrapper that login was successful
-                toast.success('Login Successful!', {
-                    position: 'top-right',
-                    autoClose: 5000,
-                });
-                navigate('/dashboard');
-            } else {
-                if (response.data.message.includes('Email')) {
-                    setErrorMessage('The email you entered doesn’t exist.');
-                } else if (response.data.message.includes('password')) {
-                    setErrorMessage('The password you entered is incorrect.');
-                } else {
-                    setErrorMessage(response.data.message || 'Login Failed! Please try again later.');
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user_id', user.id); // Store user_id for profile use
+
+                // ✅ Notify AppWrapper
+                if (onLogin) {
+                    onLogin();
                 }
 
-                toast.error(response.data.message, {
+                toast.success('Login Successful!', {
                     position: 'top-right',
-                    autoClose: 5000,
+                    autoClose: 3000,
+                });
+
+                navigate('/dashboard');
+            } else {
+                // API returned status false
+                setErrorMessage(response.data.message || 'Login failed');
+                toast.error(response.data.message || 'Login failed', {
+                    position: 'top-right',
+                    autoClose: 3000,
                 });
             }
         } catch (error) {
-            setErrorMessage('Login Failed! Please check your credentials.');
-            toast.error('Login Failed! Please check your credentials.', {
-                position: 'top-right',
-                autoClose: 5000,
-            });
-            console.error('Login Error:', error.response || error.message);
-        }
-    };
+            console.error('Login Error:', error);
 
-    const togglePassword = () => {
-        setShowPassword(!showPassword);
+            const serverError = error.response?.data?.message || 'Login failed. Please try again.';
+            setErrorMessage(serverError);
+            toast.error(serverError, {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+        }
     };
 
     return (
         <div className="login-container">
             <div className="form-side">
                 <h2>Login</h2>
+
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
+
                 <form onSubmit={handleLogin}>
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -82,6 +102,7 @@ function Login({ onLogin }) {
                             required
                         />
                     </div>
+
                     <div className="form-group password-group">
                         <label htmlFor="password">Password</label>
                         <div className="password-wrapper">
@@ -96,8 +117,8 @@ function Login({ onLogin }) {
                                 {showPassword ? <FiEyeOff /> : <FiEye />}
                             </span>
                         </div>
-                        {/* <a href="#" className="forgot-password">Forgot Password?</a> */}
                     </div>
+
                     <button type="submit">Login</button>
                 </form>
             </div>

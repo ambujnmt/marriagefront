@@ -1,77 +1,294 @@
-/* Container styling */
 .daily-checkin-container {
-    max-width: 400px;
-    margin: 0 auto;
+    width: 80%;
     padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
-    background-color: #ffffff;
-    min-height: 100vh;
-    box-sizing: border-box;
-    margin-top: 10px;
+    margin-left: 200px;
+    margin-top: 70px;
 }
 
-/* Header styling */
 .header-check {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    margin-top: 150px;
+    flex-wrap: wrap;
 }
 
-.back-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-h1 {
-    font-size: 20px;
-    margin: 0;
-    font-weight: bold;
-    flex: 1;
+.header-check h1 {
     text-align: center;
+    margin-left: 150px;
 }
 
-/* Form styling */
-.checkin-form {
-    display: flex;
-    flex-direction: column;
-}
-
-.label {
-    margin-bottom: 8px;
-    font-weight: bold;
+.add-question-button {
+    background: linear-gradient(to right, #0052D4, #00c6ff);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
     font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.3s ease;
+    margin-left: auto;
+    width: 20%;
 }
 
-.input {
+/* Table section */
+.question-table-section {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.question-table {
+    width: 90%;
+    border-collapse: collapse;
+}
+
+.question-table th,
+.question-table td {
     padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+
+
+.question-table th {
+    background-color: #f8f8f8;
+}
+
+/* Status buttons with no hover effects */
+.status-button {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: default;
+    /* change to pointer if clickable */
+    background: none !important;
+    color: inherit !important;
+    border: none !important;
+    outline: none;
+    box-shadow: none;
+    transition: none !important;
+}
+
+/* Active = green */
+.status-button.active {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border: 1px solid #c3e6cb !important;
+}
+
+/* Inactive = red */
+.status-button.inactive {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* Remove all hover effects */
+.status-button:hover,
+.status-button.active:hover,
+.status-button.inactive:hover {
+    background-color: inherit !important;
+    color: inherit !important;
+    border-color: inherit !important;
+    box-shadow: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    text-decoration: none !important;
+}
+
+/* Edit and Delete buttons */
+/* Edit and Delete buttons */
+.edit-btn,
+.delete-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    background: #ddd;
+    /* default grey background */
+    transition: none;
+    /* no hover animation */
+}
+
+/* Edit button */
+.edit-btn {
+    color: green;
+}
+
+/* Delete button */
+.delete-btn {
+    color: red;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Question Form */
+.question-form {
+    display: flex;
+    gap: 10px;
     margin-bottom: 20px;
+    align-items: center;
+}
+
+.question-form input,
+.question-form select {
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
 }
 
-.input:focus {
-    border-color: #007bff;
-}
-
-/* Submit button styling */
-.submit-button {
-    background-color: #ff7f7f;
+.question-form button {
+    padding: 8px 12px;
+    background-color: #28a745;
     color: #fff;
     border: none;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-.submit-button:hover {
-    background-color: #ff4f4f;
+.question-form button:hover {
+    background-color: #218838;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    width: 40%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.modal form input,
+.modal form select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.modal-buttons button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.modal-buttons button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.modal-buttons button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-buttons button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Global button styling excluding .edit-btn, .delete-btn, .status-button */
+button:not(.edit-btn):not(.delete-btn):not(.status-button) {
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+
+.actions-cell {
+    display: flex;
+    gap: 8px;
+    /* space between buttons */
+    align-items: center;
+    /* vertical align */
+}
+
+
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-right: 4px;
+    color: #fff;
+}
+
+.status-badge.active {
+    background-color: #28a745;
+}
+
+.status-badge.inactive {
+    background-color: #6c757d;
+}
+
+.status-badge.edited {
+    background-color: #17a2b8;
+}
+
+.status-badge.deleted {
+    background-color: #dc3545;
 }

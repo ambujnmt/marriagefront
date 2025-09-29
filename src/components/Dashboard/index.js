@@ -38,51 +38,22 @@ const Dashboard = () => {
         <div className="dashboard-container">
 
             {/* Summary cards */}
-
-            {/* <div className="summary-cards">
-                <div className="card teal summary-card">
-                    <div className="icon">♂</div>
-                    <div>
-                        <h6>Male Guest</h6>
-                        <p>Total Invites: <strong>1200</strong></p>
-                        <p>Total Come: <strong>800</strong></p>
-                    </div>
-                </div>
-                <div className="card purple summary-card">
-                    <div className="icon">♀</div>
-                    <div>
-                        <h6>Wedding Date</h6>
-                        <p>Total Invites: <strong>1050</strong></p>
-                        <p>Total Come: <strong>750</strong></p>
-                    </div>
-                </div>
-                <div className="card indigo summary-card">
-                    <div className="icon">💍</div>
-                    <div>
-                        <h6>Wedding Date</h6>
-                        <p>Jan 19, 2025</p>
-                        <p>(20 days left)</p>
-                    </div>
-                </div>
-            </div> */}
-
-            {/* Summary cards */}
             <div className="summary-cards">
                 {/* Male Guest */}
                 <div className="card teal">
                     <div className="card-header">
                         <span className="icon">♂</span>
-                        <h6>Male Guest</h6>
+                        <h6>Total Male</h6>
                     </div>
                     <div className="card-stats">
                         <div>
-                            <p>Total invites</p>
+                            {/* <p>Total invites</p> */}
                             <h2>1,200</h2>
                         </div>
                         <div className="divider"></div>
                         <div>
-                            <p>Total come</p>
-                            <h2>800</h2>
+                            {/* <p>Total come</p>
+                            <h2>800</h2> */}
                         </div>
                     </div>
                 </div>
@@ -91,18 +62,18 @@ const Dashboard = () => {
                 <div className="card purple">
                     <div className="card-header">
                         <span className="icon">♀</span>
-                        <h6>Wedding Date</h6>
+                        <h6>Total female</h6>
                     </div>
                     <div className="card-stats">
                         <div>
-                            <p>Total invites</p>
+                            {/* <p>Total invites</p> */}
                             <h2>1,050</h2>
                         </div>
                         <div className="divider"></div>
-                        <div>
+                        {/* <div>
                             <p>Total come</p>
                             <h2>750</h2>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
@@ -110,11 +81,11 @@ const Dashboard = () => {
                 <div className="card indigo">
                     <div className="card-header">
                         <span className="icon">💍</span>
-                        <h6>Wedding Date</h6>
+                        <h6>Total users</h6>
                     </div>
                     <div className="card-date">
-                        <h2>Jan 19, 2025</h2>
-                        <p>(20 days left)</p>
+                        {/* <h2>Jan 19, 2025</h2> */}
+                        <p>20</p>
                     </div>
                 </div>
             </div>
@@ -123,7 +94,8 @@ const Dashboard = () => {
 
 
             {/* Stats cards */}
-            <div className="stats-cards">
+
+            {/* <div className="stats-cards">
                 <div className="card white-card">
                     <h6>Total Weddings</h6>
                     <h2>150</h2>
@@ -134,10 +106,11 @@ const Dashboard = () => {
                     <h2>$30,000</h2>
                     <span className="growth positive">+5% Then Last Month</span>
                 </div>
-            </div>
+            </div> */}
 
             {/* Reminders + User activity + Upcoming */}
-            <div className="top-section">
+
+            {/* <div className="top-section">
                 <div className="card white-card reminder-card">
                     <h6>Reminders</h6>
                     <p className="text-muted">You have 3 reminders today</p>
@@ -152,7 +125,7 @@ const Dashboard = () => {
                     <p className="text-muted">You have 6 New client this week</p>
                     <div className="activity-list">
                         <div className="activity-item">
-                            {/* <img src="/img/nathan.jpg" alt="Nathan" /> */}
+                         
                             <img
                                 src={"/assets/images/user.jpg"}
                                 alt="User"
@@ -235,10 +208,11 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Charts */}
-            <div className="charts">
+
+            {/* <div className="charts">
                 <div className="card white-card">
                     <h6>Overview Revenue</h6>
                     <ResponsiveContainer width="100%" height={200}>
@@ -269,10 +243,11 @@ const Dashboard = () => {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-            </div>
+            </div> */}
 
             {/* Guest Traffic and Booking List */}
-            <div className="charts">
+
+            {/* <div className="charts">
                 <div className="card white-card">
                     <h6>Guest Traffic</h6>
                     <ResponsiveContainer width="100%" height={200}>
@@ -285,9 +260,9 @@ const Dashboard = () => {
                             <Bar dataKey="male" stackId="a" fill="#3b82f6" />
                         </BarChart>
                     </ResponsiveContainer>
-                </div>
+                </div> */}
 
-                <div className="card white-card">
+            {/* <div className="card white-card">
                     <h6>Booking List</h6>
                     <table className="custom-table">
                         <thead>
@@ -329,11 +304,11 @@ const Dashboard = () => {
                                 <td><span className="badge cancelled">Cancelled</span></td>
                             </tr>
                         </tbody>
-                    </table>
-                </div>
-            </div>
-
+                    </table> */}
         </div>
+
+
+
     );
 };
 

@@ -1,0 +1,165 @@
+/* Answer.css */
+.answer-container {
+    margin: 70px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #333;
+}
+
+.edit-answer-form {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 5px 8px;
+    margin-right: 5px;
+    /* cursor: pointer; */
+    /* font-size: 16px; */
+    border: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    float: right;
+    width: 35%;
+}
+
+button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+button.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button.delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+button.edit-btn:hover {
+    background-color: #45a049;
+}
+
+button.delete-btn:hover {
+    background-color: #e53935;
+}
+
+/* Table Styling */
+.answers-table {
+    width: 85%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    margin-left: 170px;
+}
+
+.answers-table th,
+.answers-table td {
+    padding: 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.answers-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.answers-table td {
+    background-color: #fff;
+}
+
+.answers-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* User Info Styling */
+.answers-table td .user-info {
+    font-weight: 500;
+    color: #4CAF50;
+}
+
+.answers-table td .question-text {
+    color: #555;
+    font-style: italic;
+}
+
+/* Truncate text */
+.answer-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    /* Adjust max-width as needed */
+}
+
+/* View More button */
+.view-more-btn {
+    background-color: #0288d1;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+}
+
+.view-more-btn:hover {
+    background-color: #0277bd;
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: white;
+    padding: 20px;
+    width: 50%;
+    max-height: 70%;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+}
+
+.close-btn:hover {
+    background-color: #e53935;
+}
