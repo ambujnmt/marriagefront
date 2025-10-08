@@ -14,7 +14,8 @@ const Header = ({ toggleSidebar, sidebarVisible }) => {
 
     return (
         <header className={`header ${sidebarVisible ? '' : 'full-width'}`}>
-            <div className="menu-icon" onClick={toggleSidebar}>☰</div>
+
+            <div className="menu-icon" onClick={toggleSidebar}></div>
 
             <div className="header-right">
                 <div className="notification-wrapper">

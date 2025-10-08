@@ -48,10 +48,12 @@ body {
 
 /* Logo Section */
 .sidebar-logo {
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 180px;
+  height: 100px;
 }
 
 .logo-main {
@@ -61,7 +63,7 @@ body {
 }
 
 .logo-main img {
-  width: 150px;
+  width: 240px !important;
 }
 
 /* Navigation Links */

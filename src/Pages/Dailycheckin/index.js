@@ -139,7 +139,7 @@ const DailyCheckin = () => {
     return (
         <div className="daily-checkin-container">
             <div className="header-check">
-                <h1>Question List</h1>
+                {/* <h1>Question List</h1> */}
                 {isAdmin && (
                     <button className="add-question-button" onClick={() => {
                         setShowForm(true);

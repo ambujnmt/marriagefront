@@ -1,5 +1,5 @@
 .daily-checkin-container {
-    width: 80%;
+    width: 85%;
     padding: 20px;
     background: #fff;
     border-radius: 10px;
@@ -19,7 +19,9 @@
 
 .header-check h1 {
     text-align: center;
-    margin-left: 150px;
+    margin-left: 54px;
+    font-size: 22px;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .add-question-button {
@@ -44,7 +46,8 @@
 }
 
 .question-table {
-    width: 90%;
+    width: 98% !important;
+    margin-left: 50px !important;
     border-collapse: collapse;
 }
 
