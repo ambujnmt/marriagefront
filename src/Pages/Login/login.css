@@ -78,8 +78,8 @@
 
 button {
     width: 100%;
-    padding: 14px !important;
-    background: linear-gradient(90deg, rgba(#f44336) 0%, rgba(0, 204, 255, 1) 100%);
+    padding: 10px !important;
+    background: #f44336 !important;
     color: white;
     border: none;
     border-radius: 8px;
