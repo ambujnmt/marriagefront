@@ -47,6 +47,7 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                         }}
                         style={{ width: '150px', height: 'auto' }}
                     />
+
                 </div>
             </div>
 
@@ -58,17 +59,29 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/partner-list">
+                        <BiCalendarEvent />Users List<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+                <li>
                     <Link to="/daily-check-in">
-                        <BiCalendarEvent /> Daily Check in <BiChevronRight className="arrow-icon" />
+                        <BiCalendarEvent /> Daily Check-in Ques.<BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>
-                    <Link to="/weakly-check-in">
-                        <BiMessageSquareDetail /> Weekly Check in <BiChevronRight className="arrow-icon" />
+                    <Link to="/dealy-check-in-answer">
+                        <BiMessageSquareDetail /> Daily Check-in Ans.<BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
+
                 <li>
-                    <Link to="/performance">
+                    <Link to="/weakly-question">
+                        <BiMessageSquareDetail /> Weekly Questions<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+
+                <li>
+                    <Link to="/result-analytics">
                         <BiChart /> Result & Analytics <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
@@ -83,13 +96,13 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/documents">
+                    <Link to="/recomendation-engine">
                         <BiFile /> Recommendations Engine <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>
-                    <Link to="/settings">
-                        <BiCog /> Settings <BiChevronRight className="arrow-icon" />
+                    <Link to="/settings/profile">
+                        <BiCog /> Profile <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>

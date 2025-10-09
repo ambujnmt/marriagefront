@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useEffect } from 'react';
 import './login.css';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -39,22 +38,18 @@ function Login({ onLogin }) {
                 });
                 navigate('/dashboard');
             } else {
-                if (response.data.message.includes('Email')) {
-                    setErrorMessage('The email you entered doesn’t exist.');
-                } else if (response.data.message.includes('password')) {
-                    setErrorMessage('The password you entered is incorrect.');
-                } else {
-                    setErrorMessage(response.data.message || 'Login Failed! Please try again later.');
-                }
-
-                toast.error(response.data.message, {
+                // Directly using the API's response message for the error
+                const apiMessage = response.data.message || 'Login Failed! Please try again later.';
+                setErrorMessage(apiMessage);
+                toast.error(apiMessage, {
                     position: 'top-right',
                     autoClose: 5000,
                 });
             }
         } catch (error) {
-            setErrorMessage('Login Failed! Please check your credentials.');
-            toast.error('Login Failed! Please check your credentials.', {
+            const errorMessage = error.response?.data?.message || 'Login Failed! Please check your credentials.';
+            setErrorMessage(errorMessage);
+            toast.error(errorMessage, {
                 position: 'top-right',
                 autoClose: 5000,
             });
@@ -96,7 +91,6 @@ function Login({ onLogin }) {
                                 {showPassword ? <FiEyeOff /> : <FiEye />}
                             </span>
                         </div>
-                        {/* <a href="#" className="forgot-password">Forgot Password?</a> */}
                     </div>
                     <button type="submit">Login</button>
                 </form>
