@@ -4,31 +4,22 @@ import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Weaklyquestion = () => {
-    const API_BASE = "https://site2demo.in/marriageapp/api";
+const API_BASE = "https://site2demo.in/marriageapp/api";
 
+const Weaklyquestion = () => {
     const [questions, setQuestions] = useState([]);
     const [newQuestion, setNewQuestion] = useState('');
     const [newStatus, setNewStatus] = useState('active');
-    const [editId, setEditId] = useState(null);
+    const [editingQuestion, setEditingQuestion] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const isAdmin = true; // Replace with actual auth logic
+    const isAdmin = true; // Replace with your auth logic
 
-    // ✅ Get logged-in user ID from localStorage
-    const getUserId = () => {
-        const storedUser = localStorage.getItem('user');
-        if (!storedUser) return null;
-        try {
-            const userObj = JSON.parse(storedUser);
-            return userObj?.id || null;
-        } catch {
-            return null;
-        }
-    };
+    // Hardcoded user_id for now; replace with dynamic login user later
+    const USER_ID = 1;
 
-    // Fetch all questions
+    // Fetch questions from backend
     const fetchQuestions = async () => {
         try {
             const resp = await fetch(`${API_BASE}/weakly-questions-list`);
@@ -38,69 +29,58 @@ const Weaklyquestion = () => {
                     data.data.map(q => ({
                         id: q.id,
                         text: q.question,
-                        status: q.status.charAt(0).toUpperCase() + q.status.slice(1),
+                        status: q.status.charAt(0).toUpperCase() + q.status.slice(1)
                     }))
                 );
             } else {
                 toast.error(data.message || "Failed to load questions");
+                setQuestions([]);
             }
         } catch (error) {
             console.error("Error fetching questions:", error);
             toast.error("Something went wrong while loading questions");
+            setQuestions([]);
         }
     };
 
     useEffect(() => {
-        fetchQuestions();
+        fetchQuestions(); // Load questions on page load
     }, []);
 
-    // Save or update question
+    // Create or update question
     const handleSaveQuestion = async (e) => {
         e.preventDefault();
-
         if (!newQuestion.trim()) {
             toast.warn("Question cannot be empty");
             return;
         }
 
-        const userId = getUserId();
-        if (!userId) {
-            toast.error("Invalid user. Please login again.");
-            return;
-        }
-
         setLoading(true);
+
         try {
             const formData = new FormData();
             formData.append('question', newQuestion.trim());
             formData.append('status', newStatus.toLowerCase());
-            formData.append('user_id', userId); // Must send user_id
+            formData.append('user_id', USER_ID);
 
-            let url = `${API_BASE}/question-create`;
-            if (editId) {
+            let url = `${API_BASE}/weakly-question`;
+            if (editingQuestion) {
                 url = `${API_BASE}/weakly-question-update`;
-                formData.append('id', editId); // Must send id for update
+                formData.append('id', editingQuestion.id);
             }
 
-            const resp = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
+            const resp = await fetch(url, { method: 'POST', body: formData });
+            const data = await resp.json();
 
-            const respData = await resp.json();
-
-            if (respData.status) {
-                toast.success(respData.message || (editId ? "Updated successfully" : "Created successfully"));
-                fetchQuestions();
-                setNewQuestion('');
-                setNewStatus('active');
-                setEditId(null);
-                setShowForm(false);
+            if (data.status) {
+                toast.success(data.message || (editingQuestion ? "Updated successfully" : "Created successfully"));
+                await fetchQuestions(); // Reload table from API
+                resetForm();
             } else {
-                toast.error(respData.message || "Operation failed");
+                toast.error(data.message || "Operation failed");
             }
         } catch (error) {
-            console.error("Error saving/updating:", error);
+            console.error("Error saving/updating question:", error);
             toast.error("Something went wrong while saving");
         } finally {
             setLoading(false);
@@ -121,83 +101,73 @@ const Weaklyquestion = () => {
 
         if (!confirm.isConfirmed) return;
 
-        const userId = getUserId();
-        if (!userId) {
-            toast.error("Invalid user. Cannot delete.");
-            return;
-        }
-
         setLoading(true);
+
         try {
             const formData = new FormData();
             formData.append('id', id);
-            formData.append('user_id', userId); // Must send user_id
+            formData.append('user_id', USER_ID);
 
-            const resp = await fetch(`${API_BASE}/weakly-question-delete`, {
-                method: 'POST',
-                body: formData,
-            });
+            const resp = await fetch(`${API_BASE}/weakly-question-delete`, { method: 'POST', body: formData });
+            const data = await resp.json();
 
-            const respData = await resp.json();
-            if (respData.status) {
-                toast.success(respData.message || "Deleted successfully");
-                setQuestions(prev => prev.filter(q => q.id !== id));
+            if (data.status) {
+                toast.success(data.message || "Deleted successfully");
+                await fetchQuestions(); // Reload table from API
             } else {
-                toast.error(respData.message || "Delete failed");
+                toast.error(data.message || "Delete failed");
             }
         } catch (error) {
-            console.error("Error deleting:", error);
+            console.error("Error deleting question:", error);
             toast.error("Something went wrong while deleting");
         } finally {
             setLoading(false);
         }
     };
 
-    // Edit question
+    // Open edit modal
     const handleEdit = (q) => {
         setNewQuestion(q.text);
         setNewStatus(q.status.toLowerCase());
-        setEditId(q.id);
+        setEditingQuestion(q);
         setShowForm(true);
+    };
+
+    // Open create modal
+    const handleAddNew = () => {
+        setNewQuestion('');
+        setNewStatus('active');
+        setEditingQuestion(null);
+        setShowForm(true);
+    };
+
+    const resetForm = () => {
+        setNewQuestion('');
+        setNewStatus('active');
+        setEditingQuestion(null);
+        setShowForm(false);
     };
 
     return (
         <div className="weaklyquestion-container">
             <div className="weakly-header-section">
                 <h1>Question List</h1>
-                {isAdmin && (
-                    <button className="weakly-question-add-button" onClick={() => {
-                        setShowForm(true);
-                        setEditId(null);
-                        setNewQuestion('');
-                        setNewStatus('active');
-                    }}>
-                        ➕ Add Question
-                    </button>
-                )}
+                {isAdmin && <button className="weakly-question-add-button" onClick={handleAddNew}>➕ Add Question</button>}
             </div>
 
             {showForm && (
                 <div className="modal-overlay">
                     <div className="modal-box">
-                        <h3>{editId ? "Edit Question" : "Add New Question"}</h3>
+                        <h3>{editingQuestion ? "Edit Question" : "Add New Question"}</h3>
                         <form onSubmit={handleSaveQuestion}>
-                            <input
-                                type="text"
-                                placeholder="Enter question..."
-                                value={newQuestion}
-                                onChange={e => setNewQuestion(e.target.value)}
-                                required
-                            />
+                            <input type="text" placeholder="Enter question..." value={newQuestion} onChange={e => setNewQuestion(e.target.value)} required />
                             <select value={newStatus} onChange={e => setNewStatus(e.target.value)}>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
                             <div className="modal-buttons">
-                                <button type="submit" disabled={loading}>
-                                    {loading ? "Saving..." : "Save"}
-                                </button>
-                                <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
+                                <button type="submit" disabled={loading}>{loading ? "Saving..." : "Save"}</button>
+                                <button type="button" onClick={resetForm}>Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -231,7 +201,7 @@ const Weaklyquestion = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={isAdmin ? "4" : "3"}>No questions found</td>
+                                <td colSpan={isAdmin ? "4" : "3"} style={{ textAlign: "center" }}>No questions found</td>
                             </tr>
                         )}
                     </tbody>

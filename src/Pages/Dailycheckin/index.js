@@ -10,10 +10,12 @@ const DailyCheckin = () => {
     const [questions, setQuestions] = useState([]);
     const [isAdmin] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [editingQuestion, setEditingQuestion] = useState(null);
     const [newQuestion, setNewQuestion] = useState('');
     const [newStatus, setNewStatus] = useState('active');
-    const [editId, setEditId] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const USER_ID = 1; // replace with dynamic login user if available
 
     useEffect(() => {
         fetchQuestions();
@@ -28,7 +30,7 @@ const DailyCheckin = () => {
                     data.data.map(q => ({
                         id: q.id,
                         text: q.question,
-                        status: q.status.charAt(0).toUpperCase() + q.status.slice(1)
+                        status: q.status.charAt(0).toUpperCase() + q.status.slice(1),
                     }))
                 );
             } else {
@@ -40,123 +42,116 @@ const DailyCheckin = () => {
         }
     };
 
-    // Save or Update Question
     const handleSaveQuestion = async (e) => {
         e.preventDefault();
-        if (!newQuestion.trim()) return;
+        if (!newQuestion.trim()) {
+            toast.error("Question cannot be empty");
+            return;
+        }
 
         setLoading(true);
+
         try {
-            const url = `${API_BASE}/question-update`;
-            const method = "POST";
+            const formData = new FormData();
+            formData.append('question', newQuestion.trim());
+            formData.append('status', newStatus.toLowerCase());
+            formData.append('user_id', USER_ID);
 
-            const requestBody = {
-                question: newQuestion.trim(),
-                status: newStatus.toLowerCase(),
-                id: editId,
-                user_id: localStorage.getItem('user_id'),
-            };
+            let url = `${API_BASE}/question-create`;
+            if (editingQuestion) {
+                url = `${API_BASE}/question-update`;
+                formData.append('id', editingQuestion.id);
+            }
 
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                },
-                body: JSON.stringify(requestBody),
-            });
-
+            const response = await fetch(url, { method: "POST", body: formData });
             const data = await response.json();
 
             if (data.status) {
-                toast.success(data.message || (editId ? "Question updated" : "Question created"));
-                fetchQuestions();
-                setNewQuestion('');
-                setNewStatus('active');
-                setShowForm(false);
-                setEditId(null);
+                toast.success(data.message || (editingQuestion ? "Question updated successfully" : "Question created successfully"));
+                await fetchQuestions(); // reload table
+                resetForm();
             } else {
-                toast.error(data.message || "Failed to save question");
+                toast.error(data.message || "Operation failed");
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error saving question:", error);
             toast.error("Something went wrong while saving question");
         } finally {
             setLoading(false);
         }
     };
 
-    // Delete Question with SweetAlert2 confirmation
-    const handleDelete = (id) => {
-        Swal.fire({
-            title: 'Are you sure delete this question?',
-            text: "You won't be able to revert this!",
+    const handleDelete = async (questionId) => {
+        const confirm = await Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to delete this question?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                setLoading(true);
-                try {
-                    const userId = localStorage.getItem('user_id');
-                    const response = await fetch(`${API_BASE}/question-delete`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                        },
-                        body: JSON.stringify({ id, user_id: userId })
-                    });
-
-                    const data = await response.json();
-
-                    if (data.status) {
-                        toast.success(data.message || "Question deleted successfully");
-                        setQuestions(questions.filter(q => q.id !== id));
-                    } else {
-                        toast.error(data.message || "Failed to delete question");
-                    }
-                } catch (error) {
-                    console.error("Error deleting question:", error);
-                    toast.error("Something went wrong while deleting question");
-                } finally {
-                    setLoading(false);
-                }
-            }
         });
+
+        if (!confirm.isConfirmed) return;
+
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append('id', questionId);
+            formData.append('user_id', USER_ID);
+
+            const response = await fetch(`${API_BASE}/question-delete`, {
+                method: "POST",
+                body: formData,
+            });
+            const data = await response.json();
+            if (data.status) {
+                toast.success(data.message || "Question deleted successfully");
+                await fetchQuestions(); // reload table
+            } else {
+                toast.error(data.message || "Failed to delete question");
+            }
+        } catch (error) {
+            console.error("Error deleting question:", error);
+            toast.error("Something went wrong while deleting question");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Edit Question
+    const resetForm = () => {
+        setEditingQuestion(null);
+        setNewQuestion('');
+        setNewStatus('active');
+        setShowForm(false);
+    };
+
     const handleEdit = (q) => {
+        setEditingQuestion(q);
         setNewQuestion(q.text);
         setNewStatus(q.status.toLowerCase());
-        setEditId(q.id);
+        setShowForm(true);
+    };
+
+    const handleAddNew = () => {
+        resetForm();
         setShowForm(true);
     };
 
     return (
         <div className="daily-checkin-container">
             <div className="header-check">
-                {/* <h1>Question List</h1> */}
                 {isAdmin && (
-                    <button className="add-question-button" onClick={() => {
-                        setShowForm(true);
-                        setEditId(null);
-                        setNewQuestion('');
-                        setNewStatus('active');
-                    }}>
+                    <button className="add-question-button" onClick={handleAddNew}>
                         ➕ Add Question
                     </button>
                 )}
             </div>
 
-            {/* Modal for Add / Edit */}
             {showForm && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h3>{editId ? "Edit Question" : "Add New Question"}</h3>
+                        <h3>{editingQuestion ? "Edit Question" : "Add New Question"}</h3>
                         <form onSubmit={handleSaveQuestion}>
                             <input
                                 type="text"
@@ -173,14 +168,13 @@ const DailyCheckin = () => {
                                 <button type="submit" disabled={loading}>
                                     {loading ? "Saving..." : "Save"}
                                 </button>
-                                <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
+                                <button type="button" onClick={resetForm}>Cancel</button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
 
-            {/* Questions Table */}
             <div className="question-table-section">
                 <table className="question-table">
                     <thead>
@@ -199,9 +193,14 @@ const DailyCheckin = () => {
                                     <td>{q.text}</td>
                                     <td>{q.status}</td>
                                     {isAdmin && (
-                                        <td className="actions-cell">
-                                            <button className="edit-btn" onClick={() => handleEdit(q)}>Edit</button>
-                                            <button className="delete-btn" onClick={() => handleDelete(q.id)}>Delete</button>
+                                        <td>
+                                            <button className='daily-question-form button' onClick={() => handleEdit(q)}>✏️ Edit</button>
+                                            <button className='daily-question-form-delete'
+                                                onClick={() => handleDelete(q.id)}
+                                                style={{ marginLeft: '8px', color: 'red' }}
+                                            >
+                                                🗑️ Delete
+                                            </button>
                                         </td>
                                     )}
                                 </tr>
