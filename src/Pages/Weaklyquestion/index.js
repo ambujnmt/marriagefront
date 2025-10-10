@@ -14,12 +14,11 @@ const Weaklyquestion = () => {
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const isAdmin = true; // Replace with your auth logic
+    const isAdmin = true;
 
-    // Hardcoded user_id for now; replace with dynamic login user later
-    const USER_ID = 1;
+    // const USER_ID = 1;
+    const USER_ID = localStorage.getItem('user_id');
 
-    // Fetch questions from backend
     const fetchQuestions = async () => {
         try {
             const resp = await fetch(`${API_BASE}/weakly-questions-list`);
@@ -44,7 +43,7 @@ const Weaklyquestion = () => {
     };
 
     useEffect(() => {
-        fetchQuestions(); // Load questions on page load
+        fetchQuestions();
     }, []);
 
     // Create or update question
@@ -74,7 +73,7 @@ const Weaklyquestion = () => {
 
             if (data.status) {
                 toast.success(data.message || (editingQuestion ? "Updated successfully" : "Created successfully"));
-                await fetchQuestions(); // Reload table from API
+                await fetchQuestions();
                 resetForm();
             } else {
                 toast.error(data.message || "Operation failed");
@@ -113,7 +112,7 @@ const Weaklyquestion = () => {
 
             if (data.status) {
                 toast.success(data.message || "Deleted successfully");
-                await fetchQuestions(); // Reload table from API
+                await fetchQuestions();
             } else {
                 toast.error(data.message || "Delete failed");
             }

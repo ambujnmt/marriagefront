@@ -3,7 +3,8 @@ import Swal from "sweetalert2";
 import "./RecommendationsEngine.css";
 
 const API_BASE = "https://site2demo.in/marriageapp/api";
-const loggedInUserId = 5;
+// const loggedInUserId = 5;
+const loggedInUserId = localStorage.getItem('user_id');
 
 const RecommendationsEngine = () => {
     const [data, setData] = useState([]);
@@ -26,7 +27,6 @@ const RecommendationsEngine = () => {
     });
     const [actionLoading, setActionLoading] = useState(false);
 
-    // Fetch recommendations for logged-in user
     const fetchData = async () => {
         setLoading(true);
         setError(null);
@@ -258,8 +258,7 @@ const RecommendationsEngine = () => {
                         title: "Deleted!",
                         text: "Recommendation deleted successfully!",
                         confirmButtonText: "Okay",
-                        // showConfirmButton defaults to true, so no need to specify
-                        timer: undefined, // remove timer or set undefined to disable auto close
+                        timer: undefined,
                     });
 
                     fetchData();

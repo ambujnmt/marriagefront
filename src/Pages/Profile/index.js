@@ -7,9 +7,8 @@ const Profile = () => {
     const storedUserId = localStorage.getItem('user_id');
     const [loading, setLoading] = useState(true);
     const [imagePreview, setImagePreview] = useState('');
-
     const [profileData, setProfileData] = useState({
-        first_name: '',
+        my_name: '',
         my_partner_name: '',
         mobile: '',
         my_partner_mobile: '',
@@ -80,8 +79,6 @@ const Profile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // No password confirmation validation here
 
         try {
             const formData = new FormData();
@@ -217,7 +214,6 @@ const Profile = () => {
                         placeholder="Enter Email"
                     />
                 </label>
-
 
                 <label>
                     Password

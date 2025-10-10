@@ -15,8 +15,8 @@ const DailyCheckin = () => {
     const [newStatus, setNewStatus] = useState('active');
     const [loading, setLoading] = useState(false);
 
-    const USER_ID = 1; // replace with dynamic login user if available
-
+    // const USER_ID = 1;
+    const USER_ID = localStorage.getItem('user_id');
     useEffect(() => {
         fetchQuestions();
     }, []);

@@ -9,8 +9,6 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-
-// ✅ Pages & Components
 import Login from "./Pages/Login";
 import Dashboard from "./components/Dashboard";
 import DailyCheckin from "./Pages/Dailycheckin";
@@ -22,14 +20,14 @@ import Answer from "./Pages/Dailycheckin/Answer";
 import Weaklyquestion from "./Pages/Weaklyquestion";
 import RecommendationsEngine from "./Pages/Recommendationsengine";
 import Resultanalytics from "./Pages/Resultanalytics";
+import Leaderboard from "./Pages/Leaderboard";
+import Relationship from "./Pages/Relatonship";
 
 const PrivateRoute = ({ isLoggedIn, loading }) => {
-  // ⏳ Wait until we know login status
   if (loading) return null;
   return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
-// 🧩 Layout wrapper (Sidebar + Header)
 const Layout = ({ isLoggedIn, handleLogout }) => {
   const location = useLocation();
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -52,7 +50,7 @@ const Layout = ({ isLoggedIn, handleLogout }) => {
           <Sidebar isVisible={sidebarVisible} handleLogout={handleLogout} />
         )}
         <div className="content-area">
-          <Outlet /> {/* ✅ Nested routes render here */}
+          <Outlet />
         </div>
       </div>
     </>
@@ -61,12 +59,12 @@ const Layout = ({ isLoggedIn, handleLogout }) => {
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true); // ⏳ New: wait before rendering
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
-    setLoading(false); // ✅ only render routes after checking login status
+    setLoading(false);
   }, []);
 
   const handleLogin = () => {
@@ -80,20 +78,17 @@ function App() {
   };
 
   if (loading) {
-    // Optional: you can show a loading screen or spinner
     return <div>Loading...</div>;
   }
 
   return (
     <Router>
       <Routes>
-        {/* Root redirect */}
         <Route
           path="/"
           element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />}
         />
 
-        {/* Public login route */}
         <Route
           path="/login"
           element={
@@ -105,7 +100,6 @@ function App() {
           }
         />
 
-        {/* Protected routes */}
         <Route
           element={<Layout isLoggedIn={isLoggedIn} handleLogout={handleLogout} />}
         >
@@ -118,10 +112,13 @@ function App() {
             <Route path="/weakly-question" element={<Weaklyquestion />} />
             <Route path="/recomendation-engine" element={<RecommendationsEngine />} />
             <Route path="/result-analytics" element={<Resultanalytics />} />
+            <Route path="/leaderboard-gamification" element={< Leaderboard />} />
+            <Route path="/relationship-progres" element={< Relationship />} />
+
+
           </Route>
         </Route>
 
-        {/* 404 Page */}
         <Route
           path="*"
           element={
