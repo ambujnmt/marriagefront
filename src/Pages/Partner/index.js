@@ -219,10 +219,10 @@ const Partner = () => {
                             <td>{partner.email}</td>
                             <td>{partner.mobile}</td>
                             <td>
-                                <button onClick={() => openEditModal(partner)} className="btn edit">
+                                <button onClick={() => openEditModal(partner)} className="partner-btn-edit">
                                     Edit
                                 </button>
-                                <button onClick={() => deletePartner(partner.id)} className="btn delete">
+                                <button onClick={() => deletePartner(partner.id)} className="partner-btn-delete">
                                     Delete
                                 </button>
                             </td>

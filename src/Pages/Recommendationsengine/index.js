@@ -300,7 +300,7 @@ const RecommendationsEngine = () => {
                     />
                     <button
                         onClick={openCreateModal}
-                        className="btn btn-primary create-btn"
+                        className="btn btn-primary rec-create-btn"
                     >
                         + Create Recommendation
                     </button>
@@ -331,13 +331,13 @@ const RecommendationsEngine = () => {
                                     <td>{formatDate(item.created_at)}</td>
                                     <td>
                                         <button
-                                            className="btn btn-info btn-sm"
+                                            className="rec-btn btn-info btn-sm"
                                             onClick={() => openEditModal(item)}
                                         >
                                             Edit
                                         </button>
                                         <button
-                                            className="btn btn-danger btn-sm"
+                                            className="rec-btn-delete btn-danger btn-sm"
                                             onClick={() => handleDelete(item.id)}
                                             style={{ marginLeft: 8 }}
                                         >

@@ -13,10 +13,11 @@ const Weaklyquestion = () => {
     const [editingQuestion, setEditingQuestion] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const isAdmin = true;
-
-    // const USER_ID = 1;
     const USER_ID = localStorage.getItem('user_id');
 
     const fetchQuestions = async () => {
@@ -124,7 +125,6 @@ const Weaklyquestion = () => {
         }
     };
 
-    // Open edit modal
     const handleEdit = (q) => {
         setNewQuestion(q.text);
         setNewStatus(q.status.toLowerCase());
@@ -132,7 +132,6 @@ const Weaklyquestion = () => {
         setShowForm(true);
     };
 
-    // Open create modal
     const handleAddNew = () => {
         setNewQuestion('');
         setNewStatus('active');
@@ -147,11 +146,54 @@ const Weaklyquestion = () => {
         setShowForm(false);
     };
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(parseInt(e.target.value, 10));
+        setCurrentPage(1);
+    };
+
+    const filteredQuestions = questions.filter(q =>
+        q.text.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedQuestions = filteredQuestions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPages = Math.ceil(filteredQuestions.length / itemsPerPage);
+
     return (
         <div className="weaklyquestion-container">
             <div className="weakly-header-section">
-                <h1>Question List</h1>
+                <h1>Weekly Question List</h1>
                 {isAdmin && <button className="weakly-question-add-button" onClick={handleAddNew}>➕ Add Question</button>}
+            </div>
+
+            <div className="controls-bar">
+                <div className="filter-container">
+                    <label>Show per page:</label>
+                    <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div className="daily-search-container">
+                    <input
+                        type="text"
+                        placeholder="Search questions..."
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        className="daily-search-input"
+                    />
+                </div>
             </div>
 
             {showForm && (
@@ -159,7 +201,13 @@ const Weaklyquestion = () => {
                     <div className="modal-box">
                         <h3>{editingQuestion ? "Edit Question" : "Add New Question"}</h3>
                         <form onSubmit={handleSaveQuestion}>
-                            <input type="text" placeholder="Enter question..." value={newQuestion} onChange={e => setNewQuestion(e.target.value)} required />
+                            <input
+                                type="text"
+                                placeholder="Enter question..."
+                                value={newQuestion}
+                                onChange={e => setNewQuestion(e.target.value)}
+                                required
+                            />
                             <select value={newStatus} onChange={e => setNewStatus(e.target.value)}>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
@@ -184,16 +232,16 @@ const Weaklyquestion = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {questions.length > 0 ? (
-                            questions.map(q => (
+                        {paginatedQuestions.length > 0 ? (
+                            paginatedQuestions.map(q => (
                                 <tr key={q.id}>
                                     <td>{q.id}</td>
                                     <td>{q.text}</td>
                                     <td>{q.status}</td>
                                     {isAdmin && (
                                         <td className="actions">
-                                            <button className="edit-btn" onClick={() => handleEdit(q)}>Edit</button>
-                                            <button className="delete-btn" onClick={() => handleDelete(q.id)}>Delete</button>
+                                            <button className="weakly-edit-btn" onClick={() => handleEdit(q)}>Edit</button>
+                                            <button className="weakly-delete-btn" onClick={() => handleDelete(q.id)}>Delete</button>
                                         </td>
                                     )}
                                 </tr>
@@ -206,6 +254,43 @@ const Weaklyquestion = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div class="pagination-wrapper">
+
+                    <div className="daily-pagination">
+                        <button
+                            className={`daily-pagination-btn daily-pagination-arrow ${currentPage === 1 ? 'disabled' : ''}`}
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                        >
+                            «
+                        </button>
+
+                        {[...Array(totalPages)].map((_, index) => {
+                            const page = index + 1;
+                            return (
+                                <button
+                                    key={page}
+                                    className={`daily-pagination-btn ${currentPage === page ? 'active' : ''}`}
+                                    onClick={() => setCurrentPage(page)}
+                                >
+                                    {page}
+                                </button>
+                            );
+                        })}
+
+                        <button
+                            className={`daily-pagination-btn daily-pagination-arrow ${currentPage === totalPages ? 'disabled' : ''}`}
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                        >
+                            »
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <ToastContainer position="top-right" autoClose={3000} />
         </div>

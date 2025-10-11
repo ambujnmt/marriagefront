@@ -14,25 +14,26 @@ const DailyCheckin = () => {
     const [newQuestion, setNewQuestion] = useState('');
     const [newStatus, setNewStatus] = useState('active');
     const [loading, setLoading] = useState(false);
-
-    // const USER_ID = 1;
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const USER_ID = localStorage.getItem('user_id');
+
     useEffect(() => {
         fetchQuestions();
-    }, []);
+    }, [searchQuery, itemsPerPage]);
 
     const fetchQuestions = async () => {
         try {
             const response = await fetch(`${API_BASE}/questions`);
             const data = await response.json();
             if (data.status && Array.isArray(data.data)) {
-                setQuestions(
-                    data.data.map(q => ({
-                        id: q.id,
-                        text: q.question,
-                        status: q.status.charAt(0).toUpperCase() + q.status.slice(1),
-                    }))
-                );
+                const formattedQuestions = data.data.map(q => ({
+                    id: q.id,
+                    text: q.question,
+                    status: q.status.charAt(0).toUpperCase() + q.status.slice(1),
+                }));
+                setQuestions(formattedQuestions);
             } else {
                 toast.error("Failed to load questions");
             }
@@ -68,7 +69,7 @@ const DailyCheckin = () => {
 
             if (data.status) {
                 toast.success(data.message || (editingQuestion ? "Question updated successfully" : "Question created successfully"));
-                await fetchQuestions(); // reload table
+                await fetchQuestions();
                 resetForm();
             } else {
                 toast.error(data.message || "Operation failed");
@@ -89,7 +90,7 @@ const DailyCheckin = () => {
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: 'Yes, delete it!',
         });
 
         if (!confirm.isConfirmed) return;
@@ -107,7 +108,7 @@ const DailyCheckin = () => {
             const data = await response.json();
             if (data.status) {
                 toast.success(data.message || "Question deleted successfully");
-                await fetchQuestions(); // reload table
+                await fetchQuestions();
             } else {
                 toast.error(data.message || "Failed to delete question");
             }
@@ -138,6 +139,27 @@ const DailyCheckin = () => {
         setShowForm(true);
     };
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const filteredQuestions = questions.filter(q =>
+        q.text.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const paginatedQuestions = filteredQuestions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const totalPages = Math.ceil(filteredQuestions.length / itemsPerPage);
+
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(parseInt(e.target.value, 10));
+        setCurrentPage(1);
+    };
+
     return (
         <div className="daily-checkin-container">
             <div className="header-check">
@@ -146,6 +168,33 @@ const DailyCheckin = () => {
                         ➕ Add Question
                     </button>
                 )}
+            </div>
+
+            <div className="controls-bar">
+                <div className="filter-container">
+                    <label htmlFor="items-per-page">Show per page:</label>
+                    <select
+                        id="items-per-page"
+                        onChange={handleItemsPerPageChange}
+                        value={itemsPerPage}
+                        className="items-per-page-dropdown"
+                    >
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+                <div className="daily-search-container">
+                    <input
+                        type="text"
+                        placeholder="Search questions..."
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        className="daily-search-input"
+                    />
+                </div>
             </div>
 
             {showForm && (
@@ -186,19 +235,16 @@ const DailyCheckin = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {questions.length > 0 ? (
-                            questions.map((q) => (
+                        {paginatedQuestions.length > 0 ? (
+                            paginatedQuestions.map((q) => (
                                 <tr key={q.id}>
                                     <td>{q.id}</td>
                                     <td>{q.text}</td>
                                     <td>{q.status}</td>
                                     {isAdmin && (
                                         <td>
-                                            <button className='daily-question-form button' onClick={() => handleEdit(q)}>✏️ Edit</button>
-                                            <button className='daily-question-form-delete'
-                                                onClick={() => handleDelete(q.id)}
-                                                style={{ marginLeft: '8px', color: 'red' }}
-                                            >
+                                            <button className='daily-question-form' onClick={() => handleEdit(q)}>✏️ Edit</button>
+                                            <button className='daily-question-form-delete' onClick={() => handleDelete(q.id)}>
                                                 🗑️ Delete
                                             </button>
                                         </td>
@@ -216,7 +262,74 @@ const DailyCheckin = () => {
                 </table>
             </div>
 
-            <ToastContainer position="top-right" autoClose={3000} />
+            {/* {totalPages > 1 && (
+                <div className="daily-pagination">
+                    <button
+                        className={`daily-pagination-btn daily-pagination-arrow ${currentPage === 1 ? 'disabled' : ''}`}
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        «
+                    </button>
+
+                    {[...Array(totalPages)].map((_, index) => {
+                        const pageNumber = index + 1;
+                        return (
+                            <button
+                                key={pageNumber}
+                                className={`daily-pagination-btn ${currentPage === pageNumber ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                        );
+                    })}
+
+                    <button
+                        className={`daily-pagination-btn daily-pagination-arrow ${currentPage === totalPages ? 'disabled' : ''}`}
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        »
+                    </button>
+                </div>
+
+            )} */}
+            {totalPages > 1 && (
+                <div className="daily-pagination">
+                    <button
+                        className={`daily-pagination-btn daily-pagination-arrow ${currentPage === 1 ? 'disabled' : ''}`}
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        «
+                    </button>
+
+                    {[...Array(totalPages)].map((_, index) => {
+                        const pageNumber = index + 1;
+                        return (
+                            <button
+                                key={pageNumber}
+                                className={`daily-pagination-btn ${currentPage === pageNumber ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                        );
+                    })}
+
+                    <button
+                        className={`daily-pagination-btn daily-pagination-arrow ${currentPage === totalPages ? 'disabled' : ''}`}
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        »
+                    </button>
+                </div>
+            )}
+
+
+            <ToastContainer />
         </div>
     );
 };

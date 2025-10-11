@@ -8,15 +8,25 @@ const API_BASE = "https://site2demo.in/marriageapp/api";
 
 const Answer = () => {
     const [answers, setAnswers] = useState([]);
+    const [filteredAnswers, setFilteredAnswers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [editAnswer, setEditAnswer] = useState(null);
     const [newAnswerText, setNewAnswerText] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState('view');
 
+    // Pagination & Search
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+
     useEffect(() => {
         fetchAnswers();
     }, []);
+
+    useEffect(() => {
+        handleSearch(searchQuery);
+    }, [answers, searchQuery]);
 
     const fetchAnswers = async () => {
         setLoading(true);
@@ -25,6 +35,7 @@ const Answer = () => {
             const data = await response.json();
             if (data.status && Array.isArray(data.data)) {
                 setAnswers(data.data);
+                setFilteredAnswers(data.data);
             } else {
                 toast.error("Failed to load answers.");
             }
@@ -34,6 +45,17 @@ const Answer = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        const filtered = answers.filter((answer) =>
+            answer.answer.toLowerCase().includes(query.toLowerCase()) ||
+            answer.question.question.toLowerCase().includes(query.toLowerCase()) ||
+            answer.user.first_name.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredAnswers(filtered);
+        setCurrentPage(1);
     };
 
     const handleDelete = async (id) => {
@@ -60,7 +82,8 @@ const Answer = () => {
                     const data = await response.json();
                     if (data.status) {
                         toast.success(data.message || "Answer deleted successfully");
-                        setAnswers(answers.filter(answer => answer.id !== id));
+                        const updatedAnswers = answers.filter(answer => answer.id !== id);
+                        setAnswers(updatedAnswers);
                     } else {
                         toast.error(data.message || "Failed to delete answer");
                     }
@@ -89,17 +112,13 @@ const Answer = () => {
 
     const handleUpdateAnswer = async (e) => {
         e.preventDefault();
-
         if (!newAnswerText.trim()) return;
-
         setLoading(true);
 
         try {
             const response = await fetch(`${API_BASE}/answer-update`, {
                 method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     id: editAnswer.id,
                     answer: newAnswerText,
@@ -112,9 +131,10 @@ const Answer = () => {
 
             if (data.status) {
                 toast.success(data.message || "Answer updated successfully");
-                setAnswers(answers.map((answer) =>
-                    answer.id === editAnswer.id ? { ...answer, answer: newAnswerText } : answer
-                ));
+                const updated = answers.map((ans) =>
+                    ans.id === editAnswer.id ? { ...ans, answer: newAnswerText } : ans
+                );
+                setAnswers(updated);
                 setShowModal(false);
                 setEditAnswer(null);
                 setNewAnswerText('');
@@ -129,16 +149,47 @@ const Answer = () => {
         }
     };
 
-
     const closeModal = () => {
         setShowModal(false);
         setEditAnswer(null);
         setNewAnswerText('');
     };
 
+    // Pagination logic
+    const indexOfLastAnswer = currentPage * itemsPerPage;
+    const indexOfFirstAnswer = indexOfLastAnswer - itemsPerPage;
+    const currentAnswers = filteredAnswers.slice(indexOfFirstAnswer, indexOfLastAnswer);
+    const totalPages = Math.ceil(filteredAnswers.length / itemsPerPage);
+
     return (
         <div className="answer-container">
             <h1>Answer List</h1>
+
+            {/* Controls */}
+            <div className="controls-bar">
+                <div className="filter-container">
+                    <label>Show:</label>
+                    <select value={itemsPerPage} onChange={(e) => {
+                        setItemsPerPage(Number(e.target.value));
+                        setCurrentPage(1);
+                    }}>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+
+                <div className="daily-search-container">
+                    <input
+                        className="daily-search-input"
+                        type="text"
+                        placeholder="Search answers..."
+                        value={searchQuery}
+                        onChange={(e) => handleSearch(e.target.value)}
+                    />
+                </div>
+            </div>
 
             {/* Answers Table */}
             <table className="answers-table">
@@ -152,25 +203,19 @@ const Answer = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {answers.length > 0 ? (
-                        answers.map((answer) => (
+                    {currentAnswers.length > 0 ? (
+                        currentAnswers.map((answer) => (
                             <tr key={answer.id}>
                                 <td>{answer.id}</td>
                                 <td>{answer.question.question}</td>
                                 <td>{answer.user.first_name}</td>
                                 <td>
-                                    <div className="answer-text">
-                                        {answer.answer}
-
-                                    </div>
-                                    <button className="btn btn-primary" onClick={() => handleViewAnswer(answer)}>View</button>
+                                    <div className="answer-text">{answer.answer}</div>
+                                    <button className="ans-btn" onClick={() => handleViewAnswer(answer)}>View</button>
                                 </td>
                                 <td>
-
-                                    <button className="edit-btn" onClick={() => handleEdit(answer)}>Edit</button>
-
-
-                                    <button className="delete-btn" onClick={() => handleDelete(answer.id)}>Delete</button>
+                                    <button className="ans-edit-btn" onClick={() => handleEdit(answer)}>Edit</button>
+                                    <button className="ans-delete-btn" onClick={() => handleDelete(answer.id)}>Delete</button>
                                 </td>
                             </tr>
                         ))
@@ -182,7 +227,40 @@ const Answer = () => {
                 </tbody>
             </table>
 
-            {/* Modal for editing or viewing an answer */}
+            {/* Pagination */}
+
+            {totalPages > 1 && (
+                <div className="ans-pagination-container">
+                    <button
+                        className="ans-pagination-btn"
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </button>
+
+                    {[...Array(totalPages)].map((_, index) => (
+                        <button
+                            key={index}
+                            className={`ans-pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                            onClick={() => setCurrentPage(index + 1)}
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+
+                    <button
+                        className="ans-pagination-btn"
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
+
+
+            {/* Modal */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
@@ -190,7 +268,7 @@ const Answer = () => {
                             <div>
                                 <h2>View Answer</h2>
                                 <p>{editAnswer.answer}</p>
-                                <button className="close-btn" onClick={closeModal}>Close</button>
+                                <button className="ans-close-btn" onClick={closeModal}>Close</button>
                             </div>
                         ) : (
                             <div>

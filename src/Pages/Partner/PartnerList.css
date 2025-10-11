@@ -37,43 +37,43 @@
     cursor: pointer;
 }
 
-.btn.edit {
-    background-color: #4CAF50;
-    color: white;
+.partner-btn-edit {
+    background-color: #6CD8CF !important;
+    color: white !important;
 }
 
-.btn.delete {
-    background-color: #f44336;
-    color: white;
+.partner-btn-delete {
+    background-color: #FF7E70 !important;
+    color: white !important;
 }
 
-.pagination {
-    margin-top: 15px;
-    text-align: center;
+.custom-pagination {
+    margin-top: 15px !important;
+    text-align: center !important;
 }
 
-.pagination-btn {
-    margin: 0 3px;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    background-color: white;
-    cursor: pointer;
+.custom-pagination {
+    margin: 0 3px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #ccc !important;
+    background-color: white !important;
+    cursor: pointer !important;
 }
 
-.pagination-btn.active {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
+.custom-pagination.active {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
 }
 
-.pagination-btn:disabled {
-    background-color: #eee;
-    cursor: not-allowed;
+.custom-pagination:disabled {
+    background-color: #eee !important;
+    cursor: not-allowed !important;
 }
 
 .pagination-ellipsis {
-    padding: 6px 12px;
-    color: #888;
+    padding: 6px 12px !important;
+    color: #888 !important;
 }
 
 button {

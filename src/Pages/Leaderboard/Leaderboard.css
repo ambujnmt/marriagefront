@@ -1,6 +1,6 @@
 .leaderboard-container {
     width: 80%;
-    margin: 40px auto;
+    margin: 70px auto;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     /* background: #f9f9f9; */
     padding: 30px;
@@ -9,10 +9,12 @@
     margin-left: 240px;
 }
 
-h1,
+.leaderboard-container h1,
 h2 {
-    text-align: center;
-    color: #333;
+    /* text-align: center; */
+    color: #333 !important;
+    font-size: 18px !important;
+    font-family: sans-serif !important;
 }
 
 .stats-card {

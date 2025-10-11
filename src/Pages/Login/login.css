@@ -79,8 +79,8 @@
 button {
     width: 100%;
     padding: 10px !important;
-    background: #f44336 !important;
-    color: white;
+    background: #FF7E70 !important;
+    color: white !important;
     border: none;
     border-radius: 8px;
     cursor: pointer;
