@@ -5,10 +5,10 @@ const Header = ({ toggleSidebar, sidebarVisible }) => {
     const [userName, setUserName] = useState('');
 
     useEffect(() => {
-        // Retrieve the user's name from localStorage
+
         const storedUserName = localStorage.getItem('userName');
         if (storedUserName) {
-            setUserName(storedUserName); // Set userName if it's found in localStorage
+            setUserName(storedUserName);
         }
     }, []);
 
@@ -25,7 +25,7 @@ const Header = ({ toggleSidebar, sidebarVisible }) => {
                 <div className="user-info">
                     <div className="profile-img">👤</div>
                     <div className="user-details">
-                        <div className="user-name">{userName}</div> {/* Dynamically display the user's name */}
+                        <div className="user-name">{userName}</div>
                         <div className="user-role">Admin</div>
                     </div>
                 </div>

@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
-// ✅ Accept onLogin prop
 function Login({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -24,21 +23,29 @@ function Login({ onLogin }) {
     const handleLogin = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+
         const loginData = { email, password };
 
         try {
             const response = await axios.post('https://site2demo.in/marriageapp/api/login', loginData);
+            console.log("Login API response:", response);
 
             if (response.data.status === true) {
+                const userId = response.data.user.id;
+                const token = response.data.token;
                 localStorage.setItem('isLoggedIn', 'true');
-                onLogin(); // ✅ tell AppWrapper that login was successful
+                localStorage.setItem('user_id', userId);
+                localStorage.setItem('auth_token', token);
+
+                onLogin();
+
                 toast.success('Login Successful!', {
                     position: 'top-right',
                     autoClose: 5000,
                 });
+
                 navigate('/dashboard');
             } else {
-                // Directly using the API's response message for the error
                 const apiMessage = response.data.message || 'Login Failed! Please try again later.';
                 setErrorMessage(apiMessage);
                 toast.error(apiMessage, {

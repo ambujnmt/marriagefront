@@ -86,12 +86,12 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/offers">
+                    <Link to="/leaderboard-gamification">
                         <BiArchive /> Leaderboard & Gamification <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>
-                    <Link to="/marketing">
+                    <Link to="/relationship-progres">
                         <BiSolidMegaphone /> Relationship progress streaks <BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
