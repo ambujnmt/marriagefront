@@ -45,6 +45,7 @@
 .partner-btn-delete {
     background-color: #FF7E70 !important;
     color: white !important;
+    margin-right: 8px;
 }
 
 .custom-pagination {

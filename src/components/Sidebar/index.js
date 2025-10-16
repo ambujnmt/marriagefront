@@ -81,6 +81,11 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                 </li>
 
                 <li>
+                    <Link to="/weakly-answer">
+                        <BiMessageSquareDetail /> Weekly answer<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+                <li>
                     <Link to="/result-analytics">
                         <BiChart /> Result & Analytics <BiChevronRight className="arrow-icon" />
                     </Link>
@@ -98,6 +103,16 @@ const Sidebar = ({ isVisible, handleLogout }) => {
                 <li>
                     <Link to="/recomendation-engine">
                         <BiFile /> Recommendations Engine <BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/daily-rating-list">
+                        <BiFile />Daily Rating<BiChevronRight className="arrow-icon" />
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/weakly-rating-list">
+                        <BiFile />Weekly Rating<BiChevronRight className="arrow-icon" />
                     </Link>
                 </li>
                 <li>

@@ -7,6 +7,12 @@
     margin-left: 240px;
 }
 
+.recommendations-container h2 {
+    display: flex;
+    justify-content: start;
+    margin-right: 100px;
+}
+
 .search-create-wrapper {
     display: flex;
     justify-content: space-between;
@@ -86,6 +92,7 @@
 .rec-btn-delete {
     background-color: #FF7E70 !important;
     color: white;
+    margin-right: 8px;
 }
 
 .btn-info:hover {

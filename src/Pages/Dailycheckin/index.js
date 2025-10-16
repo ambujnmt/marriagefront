@@ -171,7 +171,7 @@ const DailyCheckin = () => {
             </div>
 
             <div className="controls-bar">
-                <div className="filter-container">
+                <div className="dailycheck-filter-container">
                     <label htmlFor="items-per-page">Show per page:</label>
                     <select
                         id="items-per-page"
@@ -186,7 +186,7 @@ const DailyCheckin = () => {
                     </select>
                 </div>
 
-                <div className="daily-search-container">
+                <div className="quest-daily-search-container">
                     <input
                         type="text"
                         placeholder="Search questions..."
@@ -198,8 +198,8 @@ const DailyCheckin = () => {
             </div>
 
             {showForm && (
-                <div className="modal-overlay">
-                    <div className="modal">
+                <div className="ques-daily-modal-overlay">
+                    <div className="ques-daily-modal">
                         <h3>{editingQuestion ? "Edit Question" : "Add New Question"}</h3>
                         <form onSubmit={handleSaveQuestion}>
                             <input
@@ -213,7 +213,7 @@ const DailyCheckin = () => {
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
                             </select>
-                            <div className="modal-buttons">
+                            <div className="ques-daily-modal-buttons">
                                 <button type="submit" disabled={loading}>
                                     {loading ? "Saving..." : "Save"}
                                 </button>
