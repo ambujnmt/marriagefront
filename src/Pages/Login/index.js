@@ -71,7 +71,7 @@ function Login({ onLogin }) {
     return (
         <div className="login-container">
             <div className="form-side">
-                <h2>Login</h2>
+                {/* <h2>Login</h2> */}
                 {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <form onSubmit={handleLogin}>
                     <div className="form-group">

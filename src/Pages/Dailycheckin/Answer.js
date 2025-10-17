@@ -3,6 +3,7 @@ import './Answer.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import { createPortal } from 'react-dom';
 
 const API_BASE = "https://site2demo.in/marriageapp/api";
 
@@ -15,7 +16,6 @@ const Answer = () => {
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState('view');
 
-    // Pagination & Search
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -40,8 +40,8 @@ const Answer = () => {
                 toast.error("Failed to load answers.");
             }
         } catch (error) {
-            console.error("Error fetching answers:", error);
-            toast.error("Something went wrong while fetching answers.");
+            console.error(error);
+            toast.error("Error fetching answers.");
         } finally {
             setLoading(false);
         }
@@ -73,23 +73,19 @@ const Answer = () => {
                     setLoading(true);
                     const response = await fetch(`${API_BASE}/answer-delete`, {
                         method: 'POST',
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ id })
                     });
-
                     const data = await response.json();
                     if (data.status) {
-                        toast.success(data.message || "Answer deleted successfully");
-                        const updatedAnswers = answers.filter(answer => answer.id !== id);
-                        setAnswers(updatedAnswers);
+                        toast.success(data.message || "Deleted successfully");
+                        setAnswers(prev => prev.filter(a => a.id !== id));
                     } else {
-                        toast.error(data.message || "Failed to delete answer");
+                        toast.error(data.message || "Delete failed");
                     }
                 } catch (error) {
-                    console.error("Error deleting answer:", error);
-                    toast.error("Something went wrong while deleting the answer.");
+                    console.error(error);
+                    toast.error("Error deleting answer");
                 } finally {
                     setLoading(false);
                 }
@@ -114,7 +110,6 @@ const Answer = () => {
         e.preventDefault();
         if (!newAnswerText.trim()) return;
         setLoading(true);
-
         try {
             const response = await fetch(`${API_BASE}/answer-update`, {
                 method: 'POST',
@@ -126,24 +121,15 @@ const Answer = () => {
                     user_id: editAnswer.user_id
                 }),
             });
-
             const data = await response.json();
-
             if (data.status) {
-                toast.success(data.message || "Answer updated successfully");
-                const updated = answers.map((ans) =>
-                    ans.id === editAnswer.id ? { ...ans, answer: newAnswerText } : ans
-                );
-                setAnswers(updated);
-                setShowModal(false);
-                setEditAnswer(null);
-                setNewAnswerText('');
-            } else {
-                toast.error(data.message || "Failed to update answer");
-            }
+                toast.success(data.message || "Answer updated");
+                setAnswers(prev => prev.map(a => a.id === editAnswer.id ? { ...a, answer: newAnswerText } : a));
+                closeModal();
+            } else toast.error(data.message || "Update failed");
         } catch (error) {
-            console.error("Error updating answer:", error);
-            toast.error("Something went wrong while updating the answer.");
+            console.error(error);
+            toast.error("Error updating answer");
         } finally {
             setLoading(false);
         }
@@ -155,7 +141,6 @@ const Answer = () => {
         setNewAnswerText('');
     };
 
-    // Pagination logic
     const indexOfLastAnswer = currentPage * itemsPerPage;
     const indexOfFirstAnswer = indexOfLastAnswer - itemsPerPage;
     const currentAnswers = filteredAnswers.slice(indexOfFirstAnswer, indexOfLastAnswer);
@@ -169,29 +154,28 @@ const Answer = () => {
             <div className="controls-bar">
                 <div className="filter-container">
                     <label>Show:</label>
-                    <select value={itemsPerPage} onChange={(e) => {
-                        setItemsPerPage(Number(e.target.value));
-                        setCurrentPage(1);
-                    }}>
+                    <select
+                        value={itemsPerPage}
+                        onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                    >
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>
                     </select>
                 </div>
-
                 <div className="daily-search-container">
                     <input
-                        className="daily-search-input"
                         type="text"
                         placeholder="Search answers..."
                         value={searchQuery}
                         onChange={(e) => handleSearch(e.target.value)}
+                        className="daily-search-input"
                     />
                 </div>
             </div>
 
-            {/* Answers Table */}
+            {/* Table */}
             <table className="answers-table">
                 <thead>
                     <tr>
@@ -203,94 +187,72 @@ const Answer = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentAnswers.length > 0 ? (
-                        currentAnswers.map((answer) => (
-                            <tr key={answer.id}>
-                                <td>{answer.id}</td>
-                                <td>{answer.question.question}</td>
-                                <td>{answer.user.first_name}</td>
-                                <td>
-                                    <div className="answer-text">{answer.answer}</div>
-                                    <button className="ans-btn" onClick={() => handleViewAnswer(answer)}>View</button>
-                                </td>
-                                <td>
-                                    <button className="ans-edit-btn" onClick={() => handleEdit(answer)}>Edit</button>
-                                    <button className="ans-delete-btn" onClick={() => handleDelete(answer.id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5" style={{ textAlign: "center" }}>No answers found</td>
+                    {currentAnswers.length ? currentAnswers.map(a => (
+                        <tr key={a.id}>
+                            <td>{a.id}</td>
+                            <td>{a.question?.question}</td>
+                            <td>{a.user?.first_name}</td>
+                            <td>
+                                <div className="answer-text">{a.answer}</div>
+                                <button className="view-more-btn" onClick={() => handleViewAnswer(a)}>View</button>
+                            </td>
+                            <td>
+                                <button className="ans-edit-btn" onClick={() => handleEdit(a)}>Edit</button>
+                                <button className="ans-delete-btn" onClick={() => handleDelete(a.id)}>Delete</button>
+                            </td>
                         </tr>
+                    )) : (
+                        <tr><td colSpan="5" style={{ textAlign: 'center' }}>No answers found</td></tr>
                     )}
                 </tbody>
             </table>
 
             {/* Pagination */}
-
             {totalPages > 1 && (
                 <div className="ans-pagination-container">
-                    <button
-                        className="ans-pagination-btn"
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </button>
-
-                    {[...Array(totalPages)].map((_, index) => (
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="ans-pagination-btn">Previous</button>
+                    {[...Array(totalPages)].map((_, i) => (
                         <button
-                            key={index}
-                            className={`ans-pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
-                            onClick={() => setCurrentPage(index + 1)}
-                        >
-                            {index + 1}
-                        </button>
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`ans-pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                        >{i + 1}</button>
                     ))}
-
-                    <button
-                        className="ans-pagination-btn"
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </button>
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="ans-pagination-btn">Next</button>
                 </div>
             )}
 
-
-            {/* Modal */}
-            {showModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
+            {/* Modal using portal */}
+            {showModal && createPortal(
+                <div className="answer-container-modal-overlay" onClick={closeModal}>
+                    <div className="answer-container-modal" onClick={e => e.stopPropagation()}>
                         {modalType === 'view' ? (
                             <div>
-                                <h2>View Answer</h2>
-                                <p>{editAnswer.answer}</p>
-                                <button className="ans-close-btn" onClick={closeModal}>Close</button>
+                                <h2 className="modal-title">Answer Details</h2>
+                                <div className="modal-content">
+                                    <p><strong>Question:</strong> {editAnswer?.question?.question}</p>
+                                    <p><strong>User:</strong> {editAnswer?.user?.first_name}</p>
+                                    <p className="modal-answer-text">{editAnswer?.answer}</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button className="ans-close-btn" onClick={closeModal}>Close</button>
+                                </div>
                             </div>
                         ) : (
                             <div>
-                                <h2>Edit Answer</h2>
+                                <h2 className="modal-title">Edit Answer</h2>
                                 <form onSubmit={handleUpdateAnswer}>
-                                    <textarea
-                                        value={newAnswerText}
-                                        onChange={(e) => setNewAnswerText(e.target.value)}
-                                        rows="4"
-                                        required
-                                    />
-                                    <div className="modal-buttons">
-                                        <button type="submit" disabled={loading}>
-                                            {loading ? "Updating..." : "Update Answer"}
-                                        </button>
-                                        <button type="button" onClick={closeModal}>Cancel</button>
+                                    <textarea value={newAnswerText} onChange={e => setNewAnswerText(e.target.value)} rows={5} required />
+                                    <div className="modal-footer">
+                                        <button type="submit" disabled={loading}>{loading ? 'Updating...' : 'Update Answer'}</button>
+                                        <button type="button" className="ans-close-btn" onClick={closeModal}>Cancel</button>
                                     </div>
                                 </form>
                             </div>
                         )}
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             <ToastContainer position="top-right" autoClose={3000} />

@@ -130,7 +130,7 @@
 .daily-question-form-delete {
     background-color: #FF7E70 !important;
     color: #fff !important;
-
+    margin-right: 8px;
 }
 
 .actions-cell {
@@ -169,7 +169,7 @@
 }
 
 /* Modal styles */
-.modal-overlay {
+.ques-daily-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -182,7 +182,7 @@
     z-index: 1000;
 }
 
-.modal {
+.ques-daily-modal {
     background: #fff;
     padding: 25px 30px;
     border-radius: 8px;
@@ -191,14 +191,14 @@
     animation: fadeIn 0.2s ease-in-out;
 }
 
-.modal h3 {
+.ques-daily-modal h3 {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 18px;
 }
 
-.modal form input,
-.modal form select {
+.ques-daily-modal form input,
+.ques-daily-modal form select {
     width: 100%;
     padding: 8px 10px;
     margin-bottom: 12px;
@@ -207,13 +207,13 @@
     font-size: 14px;
 }
 
-.modal-buttons {
+.ques-daily-modal-buttons {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-.modal-buttons button {
+.ques-daily-modal-buttons button {
     padding: 8px 14px;
     border: none;
     border-radius: 4px;
@@ -221,12 +221,12 @@
     font-size: 14px;
 }
 
-.modal-buttons button[type="submit"] {
+.ques-daily-modal-buttons button[type="submit"] {
     background-color: #28a745;
     color: white;
 }
 
-.modal-buttons button[type="submit"]:hover {
+.ques-daily-modal-buttons button[type="submit"]:hover {
     background-color: #218838;
 }
 
@@ -235,7 +235,7 @@
     color: white;
 }
 
-.modal-buttons button[type="button"]:hover {
+.ques-daily-modal-buttons button[type="button"]:hover {
     background-color: #5a6268;
 }
 
@@ -314,7 +314,7 @@ button:not(.edit-btn):not(.delete-btn):not(.status-button) {
 }
 
 /* Items per page dropdown */
-.filter-container {
+.dailycheck-filter-container {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -328,9 +328,10 @@ button:not(.edit-btn):not(.delete-btn):not(.status-button) {
 }
 
 /* Search */
-.daily-search-container {
+.quest-daily-search-container {
     display: flex;
     align-items: center;
+    border-radius: 8px 10px !important;
 
 }
 

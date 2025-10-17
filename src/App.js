@@ -22,6 +22,10 @@ import RecommendationsEngine from "./Pages/Recommendationsengine";
 import Resultanalytics from "./Pages/Resultanalytics";
 import Leaderboard from "./Pages/Leaderboard";
 import Relationship from "./Pages/Relatonship";
+import WeaklyAnswer from "./Pages/Weaklyquestion/Weaklyanswer";
+import Raitinglist from "./Pages/Dailycheckin/Ratinglist";
+import Weaklyrating from "./Pages/Weaklyquestion/Weaklyrating";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PrivateRoute = ({ isLoggedIn, loading }) => {
   if (loading) return null;
@@ -114,6 +118,10 @@ function App() {
             <Route path="/result-analytics" element={<Resultanalytics />} />
             <Route path="/leaderboard-gamification" element={< Leaderboard />} />
             <Route path="/relationship-progres" element={< Relationship />} />
+            <Route path="/weakly-answer" element={< WeaklyAnswer />} />
+            <Route path="/daily-rating-list" element={< Raitinglist />} />
+            <Route path="/weakly-rating-list" element={< Weaklyrating />} />
+
 
 
           </Route>

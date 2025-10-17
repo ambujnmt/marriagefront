@@ -285,7 +285,6 @@ const RecommendationsEngine = () => {
     return (
         <>
             <div className="recommendations-container">
-                <h2>Recommendations</h2>
 
                 <div className="search-create-wrapper">
                     <input
@@ -310,6 +309,7 @@ const RecommendationsEngine = () => {
                     className="recomedation-table table-hover"
                     style={{ width: "100%" }}
                 >
+
                     <thead>
                         <tr>
                             <th>ID</th>
