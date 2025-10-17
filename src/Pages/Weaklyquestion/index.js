@@ -21,9 +21,18 @@ const Weaklyquestion = () => {
     const USER_ID = localStorage.getItem('user_id');
 
     const fetchQuestions = async () => {
+        setLoading(true);
         try {
-            const resp = await fetch(`${API_BASE}/weakly-questions-list`);
+            const formData = new FormData();
+            formData.append('user_id', USER_ID);
+
+            const resp = await fetch(`${API_BASE}/weakly-questions-list`, {
+                method: 'POST',
+                body: formData,
+            });
+
             const data = await resp.json();
+
             if (data.status && Array.isArray(data.data)) {
                 setQuestions(
                     data.data.map(q => ({
@@ -40,6 +49,8 @@ const Weaklyquestion = () => {
             console.error("Error fetching questions:", error);
             toast.error("Something went wrong while loading questions");
             setQuestions([]);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -47,7 +58,6 @@ const Weaklyquestion = () => {
         fetchQuestions();
     }, []);
 
-    // Create or update question
     const handleSaveQuestion = async (e) => {
         e.preventDefault();
         if (!newQuestion.trim()) {
@@ -87,7 +97,6 @@ const Weaklyquestion = () => {
         }
     };
 
-    // Delete question
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: 'Confirm deletion',
@@ -255,10 +264,8 @@ const Weaklyquestion = () => {
                 </table>
             </div>
 
-            {/* Pagination */}
             {totalPages > 1 && (
-                <div class="pagination-wrapper">
-
+                <div className="pagination-wrapper">
                     <div className="daily-pagination">
                         <button
                             className={`daily-pagination-btn daily-pagination-arrow ${currentPage === 1 ? 'disabled' : ''}`}
